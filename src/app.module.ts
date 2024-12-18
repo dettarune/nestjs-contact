@@ -4,17 +4,15 @@ import { ContactModule } from './contact/contact.module';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from './common/prisma/prisma.service';
+import { AuthModule } from './auth/auth.module';
+import { MailerService } from './mailer/mailer.service';
 
 @Module({
-  imports: [CommonModule, ContactModule, UserModule,
-    JwtModule.register({
-    global: true,
-    secret: process.env.jwtConstants,
-    signOptions: { expiresIn: '30s'}
-  }),
+  imports: [CommonModule, ContactModule, UserModule, AuthModule,
 ],
   
   controllers: [],
-  providers: [],
+  providers: [PrismaService, MailerService],
 })
 export class AppModule {}

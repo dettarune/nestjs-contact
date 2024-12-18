@@ -5,6 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { ValidationServie } from './validation/validation';
+import { APP_FILTER } from '@nestjs/core';
+import { ErrorFilters } from './error.filters';
+import { JwtModule } from '@nestjs/jwt';
 
 @Global()
 @Module({
@@ -17,10 +20,15 @@ import { ValidationServie } from './validation/validation';
         ConfigModule.forRoot({
             isGlobal: true,
         }),
+        
     ],
     providers: [
         PrismaService,
         ValidationServie,
+        {
+            provide: APP_FILTER,
+            useClass: ErrorFilters
+        }
     ],
     exports: [
         PrismaService,
