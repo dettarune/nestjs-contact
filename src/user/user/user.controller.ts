@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, Req, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Patch, Post, Req, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserRequest, LoginUserRequest, RegisterUserRequest, UserResponse } from 'src/model/user.model';
 import { WebResponse } from 'src/model/web.model';
@@ -22,11 +22,11 @@ export class UserController {
         try {
             const result = await this.userService.registerUser(request)
             return {
-                data: result
+                data: result,
+        
             }
         } catch (error) {
             throw error;
-
         }
     }
     
@@ -46,7 +46,8 @@ export class UserController {
                 data: {
                     username: result.username,
                     name: result.name,
-                    token: result.token
+                    token: result.token,
+                    tokenVerif: result.tokenVerif
                 }
             }
         } catch (error) {
@@ -54,12 +55,17 @@ export class UserController {
         }
     }
 
-    @Post()
+    @Post('/verify')
     @UseGuards(TokenGuard)
-    async verifyToken(@Req() req, @Body() tokenVerif: string): Promise<any>{
+    async verifyToken(@Req() req, @Body() tokenVerif: number): Promise<any>{
         const tokenJWT = req.user.username
+        
         try {
-            
+            this.userService.verify(tokenJWT, tokenVerif)
+            return {
+                message: `User ${tokenJWT} telah berhasil verifikasi`,
+                statusCode: 200,
+            }
         } catch (error) {
             throw error;
         }

@@ -24,6 +24,7 @@ export class UserResponse {
     name: string
     token?: string
     email?: string
+    tokenVerif?: number
 }
 
 

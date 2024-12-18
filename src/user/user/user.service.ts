@@ -3,7 +3,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { ValidationServie } from 'src/common/validation/validation';
 import { UpdateUserRequest, LoginUserRequest, RegisterUserRequest, UserResponse } from 'src/model/user.model';
-import { Logger } from 'winston';
+import { http, Logger } from 'winston';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
@@ -43,7 +43,8 @@ export class UserService {
             data: {
                 username: registerRequest.username,
                 password: hashedPW,
-                name: registerRequest.name
+                name: request.name,
+                email: request.email
             }
         })
 
@@ -55,9 +56,9 @@ export class UserService {
 
     async loginUser(req: LoginUserRequest,): Promise<any> {
         const user = this.validationService.validate(UserValidation.LOGIN, req)
-        const tokenVerif = Math.floor(Math.random() * 100000).toString()
+        const tokenVerif = Math.floor(Math.random() * 100000)
 
-        const findUser = await this.prismaService.user.findUnique({
+        const findUser = await this.prismaService.user.findFirst({
             where: {
                 username: req.username
             }
@@ -71,8 +72,9 @@ export class UserService {
             username: user.username,
         });
 
-        this.mailService.sendMail(user.email, tokenVerif)
+        this.mailService.sendMail(findUser.email, tokenVerif)
 
+    
         const updateUser = await this.prismaService.user.update({
             where: { username: user.username },
             data: { token: tokenVerif },
@@ -81,29 +83,52 @@ export class UserService {
         return {
             username: user.username,
             name: user.name,
-            token: token
+            token: token,
+            tokenVerif: tokenVerif
         }
 
     }
 
-    async verify(@Req() req, tokenVerif){
-        const username = req.user.username
+    async verify(username: string, tokenVerif: number) {
         const user = await this.prismaService.user.findFirst({
+            where: { username },
+        });
+
+        const getToken = async (username) => {
+            const user = await this.prismaService.user.findFirst({
+                where: {
+                    username: username
+                }
+            })
+            return user.token
+        }
+
+        const token = await getToken(username);
+
+        if (!token) {
+            throw new HttpException('Token tidak ditemukan', 404);
+        }
+    
+        if (token !== tokenVerif) {
+            throw new HttpException('Token Anda Tidak Valid', 400);
+        }
+        const checkV = await this.prismaService.user.findFirst({
             where: {
                 username: username
             }
-        }) 
-        
-        const token = await this.prismaService.user.findFirst({
-            where: {
-                token: tokenVerif
-            }
-        })   
+        })
 
-        
-        
-        
+        if(checkV.isVerified){
+            throw new HttpException(`User Sudah Verifikasi`, 400)
+        }
+
+        return await this.prismaService.user.update({
+            where: { username },
+            data: { token: null, isVerified: true },
+        });
     }
+    
+    
 
     async update(user: any, req: UpdateUserRequest): Promise<any> {
         const userReq = this.validationService.validate(UserValidation.UPDATE, req)

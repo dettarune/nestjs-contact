@@ -19,12 +19,13 @@
             });
         }
 
-        async sendMail(target: EmailDTO, data) {
-            await this.transporter.sendMail({
+        async sendMail(target, data) {
+            return await this.transporter.sendMail({
                 from: process.env.EMAILTRANSPORTER,
-                to: target.email,
+                to: target,
                 subject: `${target} !Kode Sekali Pakai : ${data}`
             })
+            
         }
 
     }

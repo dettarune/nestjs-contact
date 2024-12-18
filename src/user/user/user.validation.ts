@@ -5,6 +5,8 @@ export class UserValidation {
     static readonly REGISTER: ZodType = z.object({
         username: z.string().min(8).max(100),
         password: z.string().min(8).max(100),
+        name: z.string().min(8).max(100),
+        email: z.string().max(100).email({message: `Format Email Tidak Valid`})
     })
 
     static readonly LOGIN: ZodType = z.object({
