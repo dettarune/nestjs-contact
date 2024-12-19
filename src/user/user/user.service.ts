@@ -119,7 +119,7 @@ export class UserService {
         })
 
         if(checkV.isVerified){
-            throw new HttpException(`User Sudah Verifikasi`, 400)
+            throw new HttpException(`User Sudah Verifikasi`, 401)
         }
 
         return await this.prismaService.user.update({
@@ -127,8 +127,6 @@ export class UserService {
             data: { token: null, isVerified: true },
         });
     }
-    
-    
 
     async update(user: any, req: UpdateUserRequest): Promise<any> {
         const userReq = this.validationService.validate(UserValidation.UPDATE, req)
