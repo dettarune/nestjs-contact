@@ -10,7 +10,6 @@ export class UserValidation {
     })
 
     static readonly SALDOUPDATE: ZodType = z.object({
-        username: z.string().min(8).max(100),
         saldo: z.number(),
     })
 

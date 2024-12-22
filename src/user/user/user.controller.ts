@@ -55,23 +55,23 @@ export class UserController {
         }
     }
 
-    @Post('/verify')
-    @UseGuards(TokenGuard)
-    async verifyToken(@Req() req, @Body() tokenVerif: number): Promise<any>{
-        const tokenJWT = req.user.username
+    // @Post('/verify')
+    // @UseGuards(TokenGuard)
+    // async verifyToken(@Req() req, @Body() tokenVerif: number): Promise<any>{
+    //     const tokenJWT = req.user.username
         
-        try {
-            this.userService.verify(tokenJWT, tokenVerif)
-            return {
-                message: `User ${tokenJWT} telah berhasil verifikasi`,
-                statusCode: 200,
-            }
-        } catch (error) {
-            throw error;
-        }
-    }
+    //     try {
+    //         this.userService.verify(tokenJWT, tokenVerif)
+    //         return {
+    //             message: `User ${tokenJWT} telah berhasil verifikasi`,
+    //             statusCode: 200,
+    //         }
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
 
-    @Post('/add/balance')
+    @Post('/saldo/tambah')
     @UseGuards(TokenGuard)
     updateSaldo(
         @Body() saldo,  @Req() req

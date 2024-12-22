@@ -2,7 +2,7 @@ import { Body, HttpException, Inject, Injectable, Req, Res } from '@nestjs/commo
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { ValidationServie } from 'src/common/validation/validation';
-import { UpdateUserRequest, LoginUserRequest, RegisterUserRequest, UserResponse, UpdateSaldoDTO } from 'src/model/user.model';
+import { UpdateUserRequest, LoginUserRequest, RegisterUserRequest, UserResponse } from 'src/model/user.model';
 import { http, Logger } from 'winston';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt'
@@ -89,44 +89,44 @@ export class UserService {
 
     }
 
-    async verify(username: string, tokenVerif: number) {
-        const user = await this.prismaService.user.findFirst({
-            where: { username },
-        });
+    // async verify(username: string, tokenVerif: number) {
+    //     const user = await this.prismaService.user.findFirst({
+    //         where: { username },
+    //     });
 
-        const getToken = async (username) => {
-            const user = await this.prismaService.user.findFirst({
-                where: {
-                    username: username
-                }
-            })
-            return user.token
-        }
+    //     const getToken = async (username) => {
+    //         const user = await this.prismaService.user.findFirst({
+    //             where: {
+    //                 username: username
+    //             }
+    //         })
+    //         return user.token
+    //     }
 
-        const token = await getToken(username);
+    //     const token = await getToken(username);
 
-        if (!token) {
-            throw new HttpException('Token tidak ditemukan', 404);
-        }
+    //     if (!token) {
+    //         throw new HttpException('Token tidak ditemukan', 404);
+    //     }
     
-        if (token !== tokenVerif) {
-            throw new HttpException('Token Anda Tidak Valid', 400);
-        }
-        const checkV = await this.prismaService.user.findFirst({
-            where: {
-                username: username
-            }
-        })
+    //     if (token !== tokenVerif) {
+    //         throw new HttpException('Token Anda Tidak Valid', 400);
+    //     }
+    //     const checkV = await this.prismaService.user.findFirst({
+    //         where: {
+    //             username: username
+    //         }
+    //     })
 
-        if(checkV.isVerified){
-            throw new HttpException(`User Sudah Verifikasi`, 401)
-        }
+    //     if(checkV.isVerified){
+    //         throw new HttpException(`User Sudah Verifikasi`, 401)
+    //     }
 
-        return await this.prismaService.user.update({
-            where: { username },
-            data: { token: null, isVerified: true },
-        });
-    }
+    //     return await this.prismaService.user.update({
+    //         where: { username },
+    //         data: { token: null, isVerified: true },
+    //     });
+    // }
 
     async update(user: any, req: UpdateUserRequest): Promise<any> {
         const userReq = this.validationService.validate(UserValidation.UPDATE, req)
@@ -149,7 +149,7 @@ export class UserService {
         });
     }
 
-    async addSaldo(user: string, req: UpdateSaldoDTO) {
+    async addSaldo(user: string, req) {
 
         const requestValidation = this.validationService.validate(UserValidation.SALDOUPDATE, req)
 

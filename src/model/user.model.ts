@@ -27,9 +27,7 @@ export class UserResponse {
     tokenVerif?: number
 }
 
-export class UpdateSaldoDTO {
-    saldo: number
-}
+
 
 
 
