@@ -20,6 +20,7 @@ model User {
   token      Int?
   isVerified Boolean?
   email      String   @db.VarChar(100)
+  saldo Int? 
 
 
   contacts Contact[]
