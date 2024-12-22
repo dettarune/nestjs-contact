@@ -1,4 +1,4 @@
-import { Body, HttpException, Inject, Injectable, Req, Res } from '@nestjs/common';
+import { Body, HttpException, Inject, Injectable, Param, Query, Req, Res } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { ValidationServie } from 'src/common/validation/validation';
@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { response, Request } from 'express';
 import { User } from '@prisma/client';
 import { MailerService } from 'src/mailer/mailer.service';
+import * as qrcode from 'qrcode'
 
 @Injectable()
 export class UserService {
@@ -149,7 +150,7 @@ export class UserService {
         });
     }
 
-    async addSaldo(user: string, req) {
+    async addSaldo(user: string, req): Promise<any> {
 
         const requestValidation = this.validationService.validate(UserValidation.SALDOUPDATE, req)
 
@@ -169,7 +170,26 @@ export class UserService {
             where: { username: user },
             data: {saldo: balance},
         });
+    }
 
+    async getUserSaldo(user: string): Promise<any> {
+        const findUser = await this.prismaService.user.findUnique({
+            where: {
+                username: user
+            },
+            select: {saldo:true}
+        });
+    
+        if (!findUser) {
+            throw new HttpException(`Username ${user} tidak ditemukan`, 404);
+        }
+    
+        return findUser.saldo;
+    }
+    
+
+    async createQRUser(data: string): Promise<any> {
+        qrcode.t
     }
 
 }

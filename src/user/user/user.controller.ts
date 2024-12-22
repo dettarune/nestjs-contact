@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Patch, Post, Req, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, Req, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserRequest, LoginUserRequest, RegisterUserRequest, UserResponse } from 'src/model/user.model';
 import { WebResponse } from 'src/model/web.model';
@@ -89,6 +89,18 @@ export class UserController {
             
         } catch (error) {
            throw error 
+           console.error(error.message)
+        }
+    }
+
+    @Get('/saldo/:user')
+    async getUserSaldo(
+        @Param('user') user: string
+    ){
+        try {
+            return `Jumlah Saldo ${user}: ${await this.userService.getUserSaldo(user)}`
+        } catch (error) {
+            throw new HttpException(error.message, error.status || 500); // Menangani error dengan status yang sesuai
         }
     }
 
@@ -99,7 +111,7 @@ export class UserController {
 
             const userIdFromToken = req.user.username
 
-            const result = this.userService.update(userIdFromToken, updateData)
+            const result = await this.userService.update(userIdFromToken, updateData)
             return {
                 data: result
             }

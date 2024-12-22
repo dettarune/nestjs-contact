@@ -7,12 +7,13 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from './common/prisma/prisma.service';
 import { AuthModule } from './auth/auth.module';
 import { MailerService } from './mailer/mailer.service';
+import { QrcodeService } from './qrcode/qrcode.service';
 
 @Module({
   imports: [CommonModule, ContactModule, UserModule, AuthModule,
 ],
   
   controllers: [],
-  providers: [PrismaService, MailerService],
+  providers: [PrismaService, MailerService, QrcodeService],
 })
 export class AppModule {}
