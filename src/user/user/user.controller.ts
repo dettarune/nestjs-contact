@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { UpdateUserRequest, LoginUserRequest, RegisterUserRequest, UserResponse } from 'src/model/user.model';
 import { WebResponse } from 'src/model/web.model';
 import { ErrorFilters } from 'src/common/error.filters';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { Logger } from 'winston';
 import { TokenGuard } from 'src/guard/token/token.guard';
 
@@ -100,9 +100,25 @@ export class UserController {
         try {
             return `Jumlah Saldo ${user}: ${await this.userService.getUserSaldo(user)}`
         } catch (error) {
-            throw new HttpException(error.message, error.status || 500); // Menangani error dengan status yang sesuai
+            throw new HttpException(error.message, error.status || 500); 
         }
     }
+
+    @Get('/saldo/qr/:user')
+    @UseGuards(TokenGuard)
+    async getQRUser(
+        @Param('user') user: string, @Req() req
+    ){
+        try {
+            const data = req.user.username
+            return await this.userService.generateQR(data)
+
+        } catch (error) {
+            throw new HttpException(error.message, error.status || 500); 
+        }
+    }
+
+
 
     @Patch()
     @UseGuards(TokenGuard)

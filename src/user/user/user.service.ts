@@ -11,6 +11,7 @@ import { response, Request } from 'express';
 import { User } from '@prisma/client';
 import { MailerService } from 'src/mailer/mailer.service';
 import * as qrcode from 'qrcode'
+import { QrcodeService } from 'src/qrcode/qrcode.service';
 
 @Injectable()
 export class UserService {
@@ -19,7 +20,8 @@ export class UserService {
         @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
         private prismaService: PrismaService,
         private jwtService: JwtService,
-        private mailService: MailerService
+        private mailService: MailerService,
+        private qrcode: QrcodeService
     ) { }
 
     async registerUser(request: RegisterUserRequest): Promise<UserResponse> {
@@ -188,8 +190,14 @@ export class UserService {
     }
     
 
-    async createQRUser(data: string): Promise<any> {
-        qrcode.t
+    async generateQR(user: any): Promise<any> {
+
+        const data = await this.prismaService.user.findUnique({
+            where: {username: user},
+            select: {username: true, saldo: true}
+        })
+
+        return this.qrcode.generateQRCode(data)
     }
 
 }

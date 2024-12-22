@@ -4,9 +4,10 @@ import { UserService } from './user/user.service';
 import { CommonModule } from 'src/common/common.module';
 import { Logger } from 'winston';
 import { MailerService } from 'src/mailer/mailer.service';
+import { QrcodeService } from 'src/qrcode/qrcode.service';
 
 @Module({
-  providers: [UserService, Logger, MailerService ],
+  providers: [UserService, Logger, MailerService, QrcodeService ],
   controllers: [UserController],
 })
 export class UserModule {}
