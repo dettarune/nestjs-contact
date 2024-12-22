@@ -2,7 +2,7 @@ import { Body, HttpException, Inject, Injectable, Req, Res } from '@nestjs/commo
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { ValidationServie } from 'src/common/validation/validation';
-import { UpdateUserRequest, LoginUserRequest, RegisterUserRequest, UserResponse } from 'src/model/user.model';
+import { UpdateUserRequest, LoginUserRequest, RegisterUserRequest, UserResponse, UpdateSaldoDTO } from 'src/model/user.model';
 import { http, Logger } from 'winston';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt'
@@ -146,6 +146,28 @@ export class UserService {
         return await this.prismaService.user.update({
             where: { username: user },
             data: { ...userReq },
+        });
+    }
+
+    async addSaldo(user: string, req: UpdateSaldoDTO) {
+
+        const requestValidation = this.validationService.validate(UserValidation.SALDOUPDATE, req)
+
+        const findUser = await this.prismaService.user.findFirst({
+            where: {
+                username: user
+            }
+        })
+
+        if(!findUser){
+            throw new HttpException(`Username ${user} tidak ditemukan`, 404)
+        }
+
+        let balance = findUser.saldo + req.saldo
+
+        return await this.prismaService.user.update({
+            where: { username: user },
+            data: {saldo: balance},
         });
 
     }

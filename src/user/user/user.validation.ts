@@ -9,6 +9,11 @@ export class UserValidation {
         email: z.string().max(100).email({message: `Format Email Tidak Valid`})
     })
 
+    static readonly SALDOUPDATE: ZodType = z.object({
+        username: z.string().min(8).max(100),
+        saldo: z.number(),
+    })
+
     static readonly LOGIN: ZodType = z.object({
         username: z.string().min(8).max(100),
         password: z.string().min(8).max(100),

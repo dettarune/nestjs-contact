@@ -21,7 +21,7 @@ export class UserController {
     ): Promise<WebResponse<UserResponse>> {
         try {
             const result = await this.userService.registerUser(request)
-            return {
+        return {
                 data: result,
         
             }
@@ -71,8 +71,28 @@ export class UserController {
         }
     }
 
+    @Post('/add/balance')
+    @UseGuards(TokenGuard)
+    updateSaldo(
+        @Body() saldo,  @Req() req
+    ){
+        try {
+
+            const user = req.user.username
+
+            this.userService.addSaldo(user, saldo)
+
+            return { 
+                message: `Success Update Saldo!`,
+                jumlah: saldo,
+            }
+            
+        } catch (error) {
+           throw error 
+        }
+    }
+
     @Patch()
-    @UseFilters(ErrorFilters)
     @UseGuards(TokenGuard)
     async updateUser(@Body() updateData: UpdateUserRequest, @Req() req){
         try {

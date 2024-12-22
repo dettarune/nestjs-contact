@@ -20,7 +20,7 @@ model User {
   token      Int?
   isVerified Boolean?
   email      String   @db.VarChar(100)
-  saldo Int? 
+  saldo Int? @default(0) 
 
 
   contacts Contact[]
@@ -29,7 +29,7 @@ model User {
 }
 
 model Contact {
-  id         Int     @id @default(autoincrement())
+  id         Int     @id @unique @default(autoincrement())
   first_name String  @db.VarChar(100)
   last_name  String? @db.VarChar(100)
   email      String  @db.VarChar(100)
