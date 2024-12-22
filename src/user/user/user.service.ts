@@ -197,7 +197,7 @@ export class UserService {
             select: {username: true, saldo: true}
         })
 
-        return this.qrcode.generateQRCode(data)
+        return this.qrcode.generateQRCode(JSON.stringify(data))
     }
 
 }
