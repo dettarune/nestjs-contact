@@ -206,19 +206,19 @@ export class UserService {
         const processQueue = () => {
             if (iterations >= maxIterations) {
                 console.log("Loop selesai setelah", iterations, "iterasi");
-                return; // Menghentikan loop
+                return;
             }
     
             if (cara === "FIFO") {
-                arr.shift(); // Menghapus elemen pertama
+                arr.shift(); 
             } else if (cara === "LIFO") {
-                arr.pop(); // Menghapus elemen terakhir
+                arr.pop(); 
             }
     
             console.log(`Iterasi ${iterations + 1}, Data antrian: `, arr);
     
             iterations++;
-            setTimeout(processQueue, interval); // Jadwalkan iterasi berikutnya
+            setTimeout(processQueue, interval); 
         };
     
         processQueue();
