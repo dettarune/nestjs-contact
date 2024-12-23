@@ -118,7 +118,16 @@ export class UserController {
         }
     }
 
+    @Get('challenge')
+async show() {
+    const arr = [1, 2, 3, 4, 5];
+    const cara = "FIFO"; 
+    const maxIterations = 5; 
+    const interval = 2000; 
 
+    this.userService.challengeQueueEl(cara, arr, maxIterations, interval);
+    return "Loop antrian berjalan, cek log untuk detail.";
+}
 
     @Patch()
     @UseGuards(TokenGuard)

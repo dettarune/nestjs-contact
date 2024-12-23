@@ -200,4 +200,27 @@ export class UserService {
         return this.qrcode.generateQRCode(JSON.stringify(data))
     }
 
+    async challengeQueueEl(cara: string, arr: number[], maxIterations: number, interval: number) {
+        let iterations = 0;
+    
+        const processQueue = () => {
+            if (iterations >= maxIterations) {
+                console.log("Loop selesai setelah", iterations, "iterasi");
+                return; // Menghentikan loop
+            }
+    
+            if (cara === "FIFO") {
+                arr.shift(); // Menghapus elemen pertama
+            } else if (cara === "LIFO") {
+                arr.pop(); // Menghapus elemen terakhir
+            }
+    
+            console.log(`Iterasi ${iterations + 1}, Data antrian: `, arr);
+    
+            iterations++;
+            setTimeout(processQueue, interval); // Jadwalkan iterasi berikutnya
+        };
+    
+        processQueue();
+    }
 }
