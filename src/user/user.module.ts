@@ -9,5 +9,6 @@ import { QrcodeService } from 'src/qrcode/qrcode.service';
 @Module({
   providers: [UserService, Logger, MailerService, QrcodeService ],
   controllers: [UserController],
+  exports: [UserService]
 })
 export class UserModule {}
