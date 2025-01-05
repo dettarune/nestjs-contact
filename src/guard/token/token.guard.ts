@@ -13,7 +13,7 @@ export class TokenGuard implements CanActivate {
 
     const req = context.switchToHttp().getRequest()
 
-    const tokenHeader = req.header('Authorization')
+      const tokenHeader = req.header('Authorization')
 
     if (!tokenHeader) {
       throw new UnauthorizedException(`Token Tidak Valid`)
@@ -26,8 +26,8 @@ export class TokenGuard implements CanActivate {
 
 
     try {
-      const decoded = this.jwtService.verify(token)
-      req.user = decoded;
+      const tokenPayload = this.jwtService.verify(token)
+      req.user = tokenPayload;
       return true
     } catch (error) {
       throw new UnauthorizedException('Invalid or expired token');
